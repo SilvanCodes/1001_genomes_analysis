@@ -1,0 +1,6 @@
+name: get_1001_genome_snps
+channels:
+  - defaults
+dependencies:
+  - requests
+  - pandas

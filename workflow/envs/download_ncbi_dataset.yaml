@@ -1,0 +1,6 @@
+name: download_ncbi_dataset
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ncbi-datasets-cli

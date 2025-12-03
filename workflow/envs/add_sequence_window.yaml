@@ -1,0 +1,9 @@
+name: add_sequence_window
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - pandas
+  - biopython
+  - gffutils

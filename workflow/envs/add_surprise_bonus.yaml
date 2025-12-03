@@ -1,0 +1,7 @@
+name: add_surprise_bonus
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy
+  - pandas

@@ -1,0 +1,15 @@
+name: notebook
+channels:
+  - bioconda
+  - conda-forge
+  - nodefaults
+dependencies:
+  - biopython
+  - gffutils
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - python
+  - notebook
+  - ipykernel

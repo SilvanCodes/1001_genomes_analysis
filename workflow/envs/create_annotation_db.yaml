@@ -1,0 +1,6 @@
+name: create_annotation_db
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - gffutils

@@ -1,8 +1,20 @@
 samplesheet: ".test/config/samples.tsv"
 
+ncbi:
+  tair10.1: "GCF_000001735.4"
+
 get_genome:
   ncbi_ftp: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/146/045/GCF_000146045.2_R64/GCF_000146045.2_R64_genomic.fna.gz
 
 simulate_reads:
   read_length: 100
   read_number: 10000
+
+get_1001_genome_snps:
+  base_url: https://tools.1001genomes.org/api/v1.1/effects.json?type=snps;accs=all
+
+all:
+  model:
+    - "gonzalobenegas/gpn-brassicales"
+  gene_ids:
+    - "AT2G19110.1" # HMA4

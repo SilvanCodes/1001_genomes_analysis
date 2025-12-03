@@ -11,8 +11,16 @@ configfile: "config/config.yaml"
 
 # load rules
 # -----------------------------------------------------
-include: "rules/common.smk"
-include: "rules/process_reads.smk"
+include: "rules/ncbi.smk"
+
+
+# local rules
+# -----------------------------------------------------
+localrules:
+    all,
+    get_1001_genome_snps,
+    create_annotation_db,
+    add_sequence_window,
 
 
 # optional messages, log and error handling
@@ -33,5 +41,65 @@ onerror:
 # -----------------------------------------------------
 rule all:
     input:
-        "results/multiqc/multiqc_report.html",
+        # expand(
+        #     "results/scores/{model}/{gene_id}/scores.csv",
+        #     model=lookup(within=config, dpath="all/model"),
+        #     gene_id=lookup(within=config, dpath="all/gene_ids"),
+        # ),
+        expand(
+            "results/add_sequence_window/{gene_id}/snp_effects_with_sequence_window.csv",
+            gene_id=lookup(within=config, dpath="all/gene_ids"),
+        ),
     default_target: True
+
+
+rule get_1001_genome_snps:
+    output:
+        "resources/get_1001_genome_snps/{gene_id}/snp_effects.csv",
+        "resources/get_1001_genome_snps/{gene_id}/snp_effects_deduplicated.csv",
+    conda:
+        "envs/get_1001_genome_snps.yaml"
+    message:
+        """--- Downloading 1001 genome SNP effects."""
+    params:
+        base_url=lookup(within=config, dpath="get_1001_genome_snps/base_url"),
+    script:
+        "scripts/get_1001_genome_snps.py"
+
+
+rule create_annotation_db:
+    input:
+        "resources/unpack_ncbi_dataset/{accession}/annotation.gff",
+    output:
+        "resources/create_annotation_db/{accession}/annotation.db",
+    conda:
+        "envs/create_annotation_db.yaml"
+    script:
+        "scripts/create_annotation_db.py"
+
+
+rule add_sequence_window:
+    input:
+        expand(
+            [
+                "resources/unpack_ncbi_dataset/{accession}/genome.fna",
+                "resources/create_annotation_db/{accession}/annotation.db",
+            ],
+            accession=lookup(within=config, dpath="ncbi/tair10.1"),
+        ),
+        "resources/get_1001_genome_snps/{gene_id}/snp_effects_deduplicated.csv",
+    output:
+        "results/add_sequence_window/{gene_id}/snp_effects_with_sequence_window.csv",
+    conda:
+        "envs/add_sequence_window.yaml"
+    message:
+        """--- Adding sequence windows to SNP effects."""
+    script:
+        "scripts/add_sequence_window.py"
+
+
+# conda:
+#     "envs/notebook.yaml"
+# notebook:
+#     "notebooks/explore.py.ipynb"
+# snakemake --sdm conda --cores 1 --edit-notebook results/add_sequence_window/AT2G19110.1/snp_effects_with_sequence_window.csv"

@@ -1,5 +1,6 @@
 import sys
 from Bio import SeqIO
+from snakemake.script import snakemake
 
 sys.stderr = open(snakemake.log[0], "w", buffering=1)
 
